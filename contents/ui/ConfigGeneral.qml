@@ -39,6 +39,9 @@ KCM.SimpleKCM {
     property alias cfg_showActionButtonCaptions: showActionButtonCaptions.checked
     property alias cfg_compactMode: compactModeCheckbox.checked
     property alias cfg_switchCategoryOnHover: switchCategoryOnHoverCheckbox.checked
+    property bool cfg_sidebarShowLabels: Plasmoid.configuration.sidebarShowLabels
+    property int cfg_sidebarIconSize: Plasmoid.configuration.sidebarIconSize
+    property int cfg_sidebarLabelFontSize: Plasmoid.configuration.sidebarLabelFontSize
 
     Kirigami.FormLayout {
         QQC2.Button {
@@ -197,6 +200,89 @@ KCM.SimpleKCM {
             icon.name: "settings-configure"
             text: i18nc("@action:button opens plasmasearch kcm", "Configure Search Plugins…")
             onClicked: KCM.KCMLauncher.openSystemSettings("kcm_plasmasearch")
+        }
+
+        Item {
+            Kirigami.FormData.isSection: true
+        }
+
+        // New sidebar appearance settings section
+        Item {
+            Kirigami.FormData.isSection: true
+        }
+
+        QQC2.CheckBox {
+            id: sidebarShowLabelsCheckbox
+            Kirigami.FormData.label: i18n("Sidebar appearance:")
+            text: i18n("Show text labels in sidebar")
+            checked: Plasmoid.configuration.sidebarShowLabels
+            onToggled: {
+                root.cfg_sidebarShowLabels = checked
+                Plasmoid.configuration.sidebarShowLabels = checked
+            }
+        }
+
+        QQC2.ComboBox {
+            id: sidebarIconSizeComboBox
+            Kirigami.FormData.label: i18n("Icon size:")
+            model: [
+                i18n("Small"),
+                i18n("Medium"),
+                i18n("Large"),
+                i18n("Huge")
+            ]
+            currentIndex: {
+                switch (Plasmoid.configuration.sidebarIconSize) {
+                    case 16: return 0;
+                    case 22: return 1;
+                    case 32: return 2;
+                    case 48: return 3;
+                    default: return 1; // Medium is default
+                }
+            }
+            onActivated: {
+                let newSize = 22; // Default to medium
+                switch (currentIndex) {
+                    case 0: newSize = 16; break;
+                    case 1: newSize = 22; break;
+                    case 2: newSize = 32; break;
+                    case 3: newSize = 48; break;
+                }
+                root.cfg_sidebarIconSize = newSize
+                Plasmoid.configuration.sidebarIconSize = newSize
+            }
+        }
+
+        QQC2.ComboBox {
+            id: sidebarLabelFontSizeComboBox
+            Kirigami.FormData.label: i18n("Label font size:")
+            enabled: sidebarShowLabelsCheckbox.checked
+            model: [
+                i18n("Small"),
+                i18n("Default"),
+                i18n("Large"),
+                i18n("Extra Large")
+            ]
+            currentIndex: {
+                switch (Plasmoid.configuration.sidebarLabelFontSize) {
+                    case 8: return 0;
+                    case 0: return 1; // Default system font size
+                    case 12: return 2;
+                    case 14: return 3;
+                    default: return 1; // Default is system font size
+                }
+            }
+            onActivated: {
+                let newSize = 0; // Default = system font size
+                switch (currentIndex) {
+                    case 0: newSize = 8; break;
+                    case 1: newSize = 0; break; // Default system font
+                    case 2: newSize = 12; break;
+                    case 3: newSize = 14; break;
+                }
+                root.cfg_sidebarLabelFontSize = newSize
+                Plasmoid.configuration.sidebarLabelFontSize = newSize
+            }
         }
 
         Item {

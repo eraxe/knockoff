@@ -26,8 +26,13 @@ AbstractKickoffItemDelegate {
     topPadding: Kirigami.Units.smallSpacing * 2
     bottomPadding: Kirigami.Units.smallSpacing * 2
 
-    icon.width: Kirigami.Units.iconSizes.large
-    icon.height: Kirigami.Units.iconSizes.large
+    // Get icon size from configuration or use default values
+    readonly property real configuredIconSize: Plasmoid.configuration.sidebarIconSize > 0 ?
+                                               Plasmoid.configuration.sidebarIconSize :
+                                               Kirigami.Units.iconSizes.large
+
+    icon.width: root.isCategoryListItem ? configuredIconSize : Kirigami.Units.iconSizes.large
+    icon.height: root.isCategoryListItem ? configuredIconSize : Kirigami.Units.iconSizes.large
 
     labelTruncated: label.truncated
     descriptionVisible: false
@@ -54,6 +59,9 @@ AbstractKickoffItemDelegate {
             Layout.fillWidth: true
             Layout.preferredHeight: label.lineCount === 1 ? label.implicitHeight * 2 : label.implicitHeight
 
+            // Only show label if configured (when in sidebar) or always for non-sidebar items
+            visible: Plasmoid.configuration.sidebarShowLabels || !root.isCategoryListItem
+
             text: root.text
             textFormat: Text.PlainText
             elide: Text.ElideRight
@@ -62,6 +70,14 @@ AbstractKickoffItemDelegate {
             maximumLineCount: 2
             wrapMode: Text.Wrap
             color: root.iconAndLabelsShouldlookSelected ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+
+            // Apply custom font size if configured and item is in sidebar
+            font.pixelSize: {
+                if (root.isCategoryListItem && Plasmoid.configuration.sidebarLabelFontSize > 0) {
+                    return Plasmoid.configuration.sidebarLabelFontSize
+                }
+                return undefined // Use default font size
+            }
         }
     }
 }

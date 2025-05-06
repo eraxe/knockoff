@@ -69,5 +69,18 @@
             <label>Whether to allow switching category items on hover</label>
             <default>false</default>
         </entry>
+        <!-- New options for sidebar appearance -->
+        <entry name="sidebarLabelFontSize" type="Int">
+            <label>Font size for the sidebar item labels</label>
+            <default>0</default> <!-- 0 means use default system font size -->
+        </entry>
+        <entry name="sidebarShowLabels" type="Bool">
+            <label>Whether to show labels in the sidebar</label>
+            <default>true</default>
+        </entry>
+        <entry name="sidebarIconSize" type="Int">
+            <label>Icon size for sidebar items</label>
+            <default>0</default> <!-- 0 means use default system icon size -->
+        </entry>
     </group>
 </kcfg>
